@@ -8,7 +8,94 @@
 </head>
 <body>
 
-  <div class="bore" aria-hidden="true"></div>
+  <div class="tunnel-bg" aria-hidden="true">
+    <svg viewBox="0 0 1000 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <!-- spokes: longitudinal joints running from the outer ring to the void -->
+      <g stroke="#2c3740" stroke-width="1.5" opacity="0.35">
+        <line x1="500" y1="50"  x2="500" y2="345" />
+        <line x1="846" y1="250" x2="591" y2="397" />
+        <line x1="846" y1="650" x2="591" y2="503" />
+        <line x1="500" y1="850" x2="500" y2="555" />
+        <line x1="154" y1="650" x2="409" y2="503" />
+        <line x1="154" y1="250" x2="409" y2="397" />
+      </g>
+
+      <!-- ring 0: nearest -->
+      <g opacity="0.95">
+        <polygon points="500,50 846,250 777,290 500,130" fill="#3a4854" />
+        <polygon points="846,250 846,650 777,610 777,290" fill="#28323b" />
+        <polygon points="846,650 500,850 500,770 777,610" fill="#1a2128" />
+        <polygon points="500,850 154,650 223,610 500,770" fill="#1a2128" />
+        <polygon points="154,650 154,250 223,290 223,610" fill="#28323b" />
+        <polygon points="154,250 500,50 500,130 223,290" fill="#3a4854" />
+        <g fill="#8b98a3">
+          <circle cx="500" cy="50" r="6" /><circle cx="846" cy="250" r="6" />
+          <circle cx="846" cy="650" r="6" /><circle cx="500" cy="850" r="6" />
+          <circle cx="154" cy="650" r="6" /><circle cx="154" cy="250" r="6" />
+        </g>
+      </g>
+
+      <!-- ring 1 -->
+      <g opacity="0.82">
+        <polygon points="500,130 777,290 722,322 500,194" fill="#34414c" />
+        <polygon points="777,290 777,610 722,578 722,322" fill="#242e36" />
+        <polygon points="777,610 500,770 500,706 722,578" fill="#171d23" />
+        <polygon points="500,770 223,610 278,578 500,706" fill="#171d23" />
+        <polygon points="223,610 223,290 278,322 278,578" fill="#242e36" />
+        <polygon points="223,290 500,130 500,194 278,322" fill="#34414c" />
+        <g fill="#7c8994" opacity="0.85">
+          <circle cx="500" cy="130" r="5" /><circle cx="777" cy="290" r="5" />
+          <circle cx="777" cy="610" r="5" /><circle cx="500" cy="770" r="5" />
+          <circle cx="223" cy="610" r="5" /><circle cx="223" cy="290" r="5" />
+        </g>
+      </g>
+
+      <!-- ring 2 -->
+      <g opacity="0.68">
+        <polygon points="500,194 722,322 678,347 500,245" fill="#2e3a44" />
+        <polygon points="722,322 722,578 678,553 678,347" fill="#212a31" />
+        <polygon points="722,578 500,706 500,655 678,553" fill="#151a1f" />
+        <polygon points="500,706 278,578 322,553 500,655" fill="#151a1f" />
+        <polygon points="278,578 278,322 322,347 322,553" fill="#212a31" />
+        <polygon points="278,322 500,194 500,245 322,347" fill="#2e3a44" />
+      </g>
+
+      <!-- ring 3 -->
+      <g opacity="0.52">
+        <polygon points="500,245 678,347 642,368 500,286" fill="#28333c" />
+        <polygon points="678,347 678,553 642,532 642,368" fill="#1d252c" />
+        <polygon points="678,553 500,655 500,614 642,532" fill="#12171b" />
+        <polygon points="500,655 322,553 358,532 500,614" fill="#12171b" />
+        <polygon points="322,553 322,347 358,368 358,532" fill="#1d252c" />
+        <polygon points="322,347 500,245 500,286 358,368" fill="#28333c" />
+      </g>
+
+      <!-- ring 4 -->
+      <g opacity="0.36">
+        <polygon points="500,286 642,368 613,384 500,319" fill="#222b33" />
+        <polygon points="642,368 642,532 613,516 613,384" fill="#1a2126" />
+        <polygon points="642,532 500,614 500,581 613,516" fill="#101417" />
+        <polygon points="500,614 358,532 387,516 500,581" fill="#101417" />
+        <polygon points="358,532 358,368 387,384 387,516" fill="#1a2126" />
+        <polygon points="358,368 500,286 500,319 387,384" fill="#222b33" />
+      </g>
+
+      <!-- ring 5: farthest, dimmest -->
+      <g opacity="0.22">
+        <polygon points="500,319 613,384 591,397 500,345" fill="#1c242a" />
+        <polygon points="613,384 613,516 591,503 591,397" fill="#161c20" />
+        <polygon points="613,516 500,581 500,555 591,503" fill="#0d1113" />
+        <polygon points="500,581 387,516 409,503 500,555" fill="#0d1113" />
+        <polygon points="387,516 387,384 409,397 409,503" fill="#161c20" />
+        <polygon points="387,384 500,319 500,345 409,397" fill="#1c242a" />
+      </g>
+
+      <!-- the void at the end of the bore -->
+      <polygon points="500,345 591,397 591,503 500,555 409,503 409,397" fill="#060d16" />
+
+      <circle class="tunnel-pulse" cx="500" cy="450" r="90" fill="none" stroke="#35e5d1" stroke-width="2" />
+    </svg>
+  </div>
 
   <header class="titleblock">
     <div class="titleblock__center">
@@ -16,17 +103,6 @@
       <p class="subtitle">a running index of deployed tools</p>
     </div>
   </header>
-
-  <div class="sitebar" id="sitebar">
-    <div class="sitebar__rivet sitebar__rivet--tl" aria-hidden="true"></div>
-    <div class="sitebar__rivet sitebar__rivet--tr" aria-hidden="true"></div>
-    <div class="sitebar__rivet sitebar__rivet--bl" aria-hidden="true"></div>
-    <div class="sitebar__rivet sitebar__rivet--br" aria-hidden="true"></div>
-    <div class="sitebar__stat">
-      <span class="sitebar__label">SITE VISITS</span>
-      <span class="sitebar__value" id="visit-count">···</span>
-    </div>
-  </div>
 
   <nav class="filterbar" id="filterbar">
     <button class="filter-chip is-active" data-filter="all">ALL</button>

@@ -7,8 +7,6 @@ async function init() {
   const categories = data.categories || [];
   const apps = data.apps || [];
 
-  trackSiteVisit();
-
   if (apps.length === 0) {
     document.getElementById('empty-state').hidden = false;
     return;
@@ -116,17 +114,6 @@ function appSlug(url) {
     return new URL(url).hostname.split('.')[0];
   } catch {
     return 'app';
-  }
-}
-
-async function trackSiteVisit() {
-  const el = document.getElementById('visit-count');
-  try {
-    const res = await fetch(`https://api.countapi.xyz/hit/${COUNTER_NAMESPACE}/site-visits`);
-    const data = await res.json();
-    el.textContent = String(data.value).padStart(4, '0');
-  } catch {
-    el.textContent = '—';
   }
 }
 

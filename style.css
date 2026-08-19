@@ -1,147 +1,343 @@
-const COUNTER_NAMESPACE = 'app-struc-ab-pese';
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500&display=swap');
 
-async function init() {
-  const res = await fetch('apps.json', { cache: 'no-store' });
-  const data = await res.json();
+:root {
+  --bg: #0a1622;
+  --bg-deep: #060d16;
+  --grid-line: rgba(180, 205, 225, 0.07);
+  --grid-line-strong: rgba(180, 205, 225, 0.14);
+  --ink: #e7eef4;
+  --ink-muted: #7f92a6;
+  --paper: #eef1ee;
+  --paper-dim: #dfe4de;
+  --accent: #c4432b;
+  --accent-soft: rgba(196, 67, 43, 0.16);
+  --glow: #35e5d1;
+  --glow-soft: rgba(53, 229, 209, 0.18);
+  --steel: #93a1ad;
+  --steel-dark: #3c4750;
+  --steel-light: #c7d0d7;
+  --concrete-noise: rgba(90, 95, 90, 0.05);
+  --radius: 2px;
+}
 
-  const categories = data.categories || [];
-  const apps = data.apps || [];
+* { box-sizing: border-box; }
 
-  if (apps.length === 0) {
-    document.getElementById('empty-state').hidden = false;
-    return;
+html { scroll-behavior: smooth; }
+
+body {
+  position: relative;
+  margin: 0;
+  background: radial-gradient(ellipse at 50% 20%, var(--bg) 0%, var(--bg-deep) 100%);
+  color: var(--ink);
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ---------- Isometric tunnel backdrop ----------
+   concentric isometric hex rings sharing one centre, like precast concrete
+   lining rings receding down a bored tunnel toward a dark void, joined by
+   longitudinal rib lines. A slow outward pulse stands in for a light
+   travelling up the bore toward the viewer. Fixed + low contrast so it
+   reads as atmosphere behind the content, not a graphic sitting on top. */
+.tunnel-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.tunnel-bg svg {
+  width: 100%;
+  height: 100%;
+}
+
+.tunnel-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0.5;
+  animation: tunnel-pulse 6s ease-out infinite;
+}
+
+@keyframes tunnel-pulse {
+  0%   { transform: scale(1);    opacity: 0.55; }
+  100% { transform: scale(4.6);  opacity: 0; }
+}
+
+body > *:not(.tunnel-bg) { position: relative; z-index: 1; }
+
+/* ---------- Title block ---------- */
+.titleblock {
+  display: flex;
+  justify-content: center;
+  border-bottom: 2px solid var(--steel-dark);
+  padding: 22px 32px 20px;
+  max-width: 980px;
+  margin: 32px auto 0;
+}
+
+.titleblock__center {
+  text-align: center;
+}
+
+.titleblock__center h1 {
+  margin: 0;
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 600;
+  font-size: 28px;
+  letter-spacing: 0.18em;
+  text-shadow: 0 0 18px var(--glow-soft), 0 0 2px rgba(231, 238, 244, 0.4);
+}
+
+.subtitle {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+/* ---------- Filter bar ---------- */
+.filterbar {
+  max-width: 980px;
+  margin: 20px auto 0;
+  padding: 0 32px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter-chip {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  background: transparent;
+  color: var(--ink-muted);
+  border: 1px solid var(--grid-line-strong);
+  border-radius: var(--radius);
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.filter-chip:hover {
+  border-color: var(--glow);
+  color: var(--ink);
+  box-shadow: 0 0 10px var(--glow-soft);
+}
+
+.filter-chip.is-active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* ---------- Main / sheet index ---------- */
+main {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 8px 32px 64px;
+}
+
+.category-section {
+  margin-top: 40px;
+}
+
+.category-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  border-bottom: 1px solid var(--grid-line-strong);
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+}
+
+.category-heading__code {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+}
+
+.category-heading__label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.category-heading__count {
+  margin-left: auto;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+
+.app-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+/* cast-concrete panel: a genuine noise-grain texture (SVG fractal noise,
+   fully self-contained — no external image requests) laid under the paper
+   colour with a multiply blend, so cards read as poured slabs, plus a
+   glowing top seam like an embedded conduit line. */
+.app-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: var(--paper);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+  background-blend-mode: multiply;
+  color: #182430;
+  border-radius: var(--radius);
+  padding: 18px 18px 16px;
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-left: 3px solid var(--steel);
+  box-shadow: 0 0 0 rgba(53, 229, 209, 0);
+  transition: transform 0.12s ease, box-shadow 0.2s ease, border-color 0.12s ease;
+}
+
+.app-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 3px; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--glow), transparent 70%);
+  opacity: 0.55;
+}
+
+.app-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  border-left-color: var(--accent);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35), 0 0 16px var(--glow-soft);
+}
+
+.app-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* bolt-head marker: metallic gradient standing in for a riveted plate tag */
+.app-card__marker {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, var(--steel-light) 0%, var(--steel) 42%, var(--steel-dark) 100%);
+  border: 1.5px solid #182430;
+  box-shadow: inset 0 -2px 3px rgba(0,0,0,0.35), inset 0 1px 1px rgba(255,255,255,0.5), 0 0 8px var(--glow-soft);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  line-height: 1.1;
+  font-weight: 600;
+  color: #12181d;
+}
+
+.app-card__marker::before {
+  content: "";
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  top: 50%;
+  border-top: 1px solid rgba(24, 36, 48, 0.6);
+}
+
+.app-card__marker span:first-child { padding-bottom: 3px; }
+.app-card__marker span:last-child { padding-top: 3px; }
+
+.app-card__name {
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 600;
+  font-size: 15px;
+  padding-right: 24px;
+}
+
+.app-card__desc {
+  font-size: 13px;
+  line-height: 1.45;
+  color: #3c4a58;
+  flex-grow: 1;
+}
+
+.app-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.app-card__open {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+}
+
+.app-card__uses {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: #6b7885;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Empty state ---------- */
+.empty-state {
+  max-width: 980px;
+  margin: 60px auto;
+  padding: 0 32px;
+  text-align: center;
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--ink-muted);
+}
+
+.empty-state p:first-child {
+  color: var(--ink);
+  letter-spacing: 0.1em;
+  margin-bottom: 6px;
+}
+
+.empty-state__hint code {
+  color: var(--accent);
+}
+
+/* ---------- Footer ---------- */
+footer {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 20px 32px 40px;
+  border-top: 1px solid var(--grid-line-strong);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+
+footer code {
+  color: var(--ink-muted);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 640px) {
+  .titleblock {
+    padding: 16px 20px;
   }
-
-  // group apps by category id, preserving category order; unknown ids fall
-  // into a trailing "Uncategorized" group so nothing silently disappears.
-  const byCategory = new Map();
-  categories.forEach(c => byCategory.set(c.id, []));
-  const fallbackId = '__uncategorized__';
-
-  apps.forEach(app => {
-    const key = byCategory.has(app.category) ? app.category : fallbackId;
-    if (!byCategory.has(key)) byCategory.set(key, []);
-    byCategory.get(key).push(app);
-  });
-
-  if (byCategory.has(fallbackId)) {
-    categories.push({ id: fallbackId, code: 'GEN', label: 'Uncategorized' });
-  }
-
-  const filterbar = document.getElementById('filterbar');
-  const sheetIndex = document.getElementById('sheet-index');
-
-  categories.forEach(cat => {
-    const list = byCategory.get(cat.id) || [];
-    if (list.length === 0) return;
-
-    // filter chip
-    const chip = document.createElement('button');
-    chip.className = 'filter-chip';
-    chip.dataset.filter = cat.id;
-    chip.textContent = cat.label.toUpperCase();
-    filterbar.appendChild(chip);
-
-    // section
-    const section = document.createElement('section');
-    section.className = 'category-section';
-    section.dataset.category = cat.id;
-
-    const heading = document.createElement('div');
-    heading.className = 'category-heading';
-    heading.innerHTML = `
-      <span class="category-heading__code">${cat.code}</span>
-      <span class="category-heading__label">${cat.label}</span>
-      <span class="category-heading__count">${String(list.length).padStart(2, '0')} APP${list.length === 1 ? '' : 'S'}</span>
-    `;
-    section.appendChild(heading);
-
-    const grid = document.createElement('div');
-    grid.className = 'app-grid';
-
-    list.forEach((app, i) => {
-      const slug = appSlug(app.url);
-      const card = document.createElement('a');
-      card.className = 'app-card';
-      card.href = app.url;
-      card.target = '_blank';
-      card.rel = 'noopener noreferrer';
-      card.dataset.category = cat.id;
-      card.dataset.slug = slug;
-
-      const markNo = String(i + 1).padStart(2, '0');
-      card.innerHTML = `
-        <div class="app-card__marker"><span>${cat.code}</span><span>${markNo}</span></div>
-        <div class="app-card__name">${escapeHtml(app.name)}</div>
-        <div class="app-card__desc">${escapeHtml(app.description || '')}</div>
-        <div class="app-card__footer">
-          <span class="app-card__open">OPEN APP &rarr;</span>
-          <span class="app-card__uses" data-uses-for="${slug}">— uses</span>
-        </div>
-      `;
-      grid.appendChild(card);
-    });
-
-    section.appendChild(grid);
-    sheetIndex.appendChild(section);
-  });
-
-  // filtering
-  filterbar.addEventListener('click', (e) => {
-    const btn = e.target.closest('.filter-chip');
-    if (!btn) return;
-    filterbar.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('is-active'));
-    btn.classList.add('is-active');
-
-    const filter = btn.dataset.filter;
-    sheetIndex.querySelectorAll('.category-section').forEach(section => {
-      section.hidden = !(filter === 'all' || section.dataset.category === filter);
-    });
-  });
-
-  // usage tracking: count a "use" whenever an app card is actually opened
-  sheetIndex.addEventListener('click', (e) => {
-    const card = e.target.closest('.app-card');
-    if (!card) return;
-    bumpUseCount(card.dataset.slug);
-  });
-
-  loadUseCounts(sheetIndex);
+  main, .filterbar, footer { padding-left: 20px; padding-right: 20px; }
 }
 
-function appSlug(url) {
-  try {
-    return new URL(url).hostname.split('.')[0];
-  } catch {
-    return 'app';
-  }
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .app-card { transition: none; }
+  .tunnel-pulse { animation: none; opacity: 0.15; }
 }
-
-function bumpUseCount(slug) {
-  fetch(`https://api.countapi.xyz/hit/${COUNTER_NAMESPACE}/app-${slug}`).catch(() => {});
-}
-
-async function loadUseCounts(sheetIndex) {
-  const spans = sheetIndex.querySelectorAll('[data-uses-for]');
-  await Promise.all(Array.from(spans).map(async (span) => {
-    const slug = span.dataset.usesFor;
-    try {
-      const res = await fetch(`https://api.countapi.xyz/get/${COUNTER_NAMESPACE}/app-${slug}`);
-      const count = res.ok ? (await res.json()).value || 0 : 0;
-      span.textContent = `${count} use${count === 1 ? '' : 's'}`;
-    } catch {
-      span.textContent = '0 uses';
-    }
-  }));
-}
-
-function escapeHtml(str) {
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-}
-
-init().catch(err => {
-  console.error('Failed to load apps.json', err);
-  document.getElementById('empty-state').hidden = false;
-});
