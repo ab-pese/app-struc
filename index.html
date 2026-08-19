@@ -91,23 +91,24 @@
       </g>
 
       <!-- the void at the end of the bore -->
-      <polygon points="500,345 591,397 591,503 500,555 409,503 409,397" fill="#060d16" />
+      <polygon points="500,345 591,397 591,503 500,555 409,503 409,397" fill="#08090a" />
 
       <circle class="tunnel-pulse" cx="500" cy="450" r="90" fill="none" stroke="#35e5d1" stroke-width="2" />
     </svg>
   </div>
 
-  <header class="titleblock">
-    <div class="titleblock__center">
-      <h1>APP INDEX</h1>
-      <p class="subtitle">a running index of deployed tools</p>
-    </div>
+  <header class="topbar">
+    <div class="topbar__mark">&#9670;&nbsp;APP&nbsp;INDEX</div>
+    <nav class="filterbar" id="filterbar">
+      <button class="filter-chip is-active" data-filter="all">All</button>
+      <!-- category chips injected here -->
+    </nav>
   </header>
 
-  <nav class="filterbar" id="filterbar">
-    <button class="filter-chip is-active" data-filter="all">ALL</button>
-    <!-- category chips injected here -->
-  </nav>
+  <section class="hero">
+    <h1>Deployed<br>Tools&nbsp;Index</h1>
+    <p class="subtitle">a running index of internal engineering apps</p>
+  </section>
 
   <main id="sheet-index">
     <!-- category sections injected here -->

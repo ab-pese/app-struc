@@ -71,6 +71,9 @@ async function init() {
 
       const markNo = String(i + 1).padStart(2, '0');
       card.innerHTML = `
+        <div class="app-card__icon" aria-hidden="true">
+          <svg viewBox="0 0 44 44"><polygon points="22,4 38,13 38,31 22,40 6,31 6,13" /></svg>
+        </div>
         <div class="app-card__marker"><span>${cat.code}</span><span>${markNo}</span></div>
         <div class="app-card__name">${escapeHtml(app.name)}</div>
         <div class="app-card__desc">${escapeHtml(app.description || '')}</div>
