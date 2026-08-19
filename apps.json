@@ -26,7 +26,7 @@
     },
     {
       "name": "Sheet Region Exporter",
-      "category": "tools",
+      "category": "precast",
       "url": "https://view-print.streamlit.app",
       "description": "Exports selected regions of drawing sheets as clean, print-ready views."
     }
