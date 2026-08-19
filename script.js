@@ -1,3 +1,5 @@
+const COUNTER_NAMESPACE = 'app-struc-ab-pese';
+
 async function init() {
   const res = await fetch('apps.json', { cache: 'no-store' });
   const data = await res.json();
@@ -5,10 +7,7 @@ async function init() {
   const categories = data.categories || [];
   const apps = data.apps || [];
 
-  document.getElementById('sheet-no').textContent =
-    'A-' + String(apps.length).padStart(3, '0');
-  document.getElementById('rev-no').textContent =
-    new Date().toISOString().slice(0, 10);
+  trackSiteVisit();
 
   if (apps.length === 0) {
     document.getElementById('empty-state').hidden = false;
@@ -63,19 +62,24 @@ async function init() {
     grid.className = 'app-grid';
 
     list.forEach((app, i) => {
+      const slug = appSlug(app.url);
       const card = document.createElement('a');
       card.className = 'app-card';
       card.href = app.url;
       card.target = '_blank';
       card.rel = 'noopener noreferrer';
       card.dataset.category = cat.id;
+      card.dataset.slug = slug;
 
       const markNo = String(i + 1).padStart(2, '0');
       card.innerHTML = `
         <div class="app-card__marker"><span>${cat.code}</span><span>${markNo}</span></div>
         <div class="app-card__name">${escapeHtml(app.name)}</div>
         <div class="app-card__desc">${escapeHtml(app.description || '')}</div>
-        <div class="app-card__open">OPEN APP &rarr;</div>
+        <div class="app-card__footer">
+          <span class="app-card__open">OPEN APP &rarr;</span>
+          <span class="app-card__uses" data-uses-for="${slug}">— uses</span>
+        </div>
       `;
       grid.appendChild(card);
     });
@@ -96,6 +100,52 @@ async function init() {
       section.hidden = !(filter === 'all' || section.dataset.category === filter);
     });
   });
+
+  // usage tracking: count a "use" whenever an app card is actually opened
+  sheetIndex.addEventListener('click', (e) => {
+    const card = e.target.closest('.app-card');
+    if (!card) return;
+    bumpUseCount(card.dataset.slug);
+  });
+
+  loadUseCounts(sheetIndex);
+}
+
+function appSlug(url) {
+  try {
+    return new URL(url).hostname.split('.')[0];
+  } catch {
+    return 'app';
+  }
+}
+
+async function trackSiteVisit() {
+  const el = document.getElementById('visit-count');
+  try {
+    const res = await fetch(`https://api.countapi.xyz/hit/${COUNTER_NAMESPACE}/site-visits`);
+    const data = await res.json();
+    el.textContent = String(data.value).padStart(4, '0');
+  } catch {
+    el.textContent = '—';
+  }
+}
+
+function bumpUseCount(slug) {
+  fetch(`https://api.countapi.xyz/hit/${COUNTER_NAMESPACE}/app-${slug}`).catch(() => {});
+}
+
+async function loadUseCounts(sheetIndex) {
+  const spans = sheetIndex.querySelectorAll('[data-uses-for]');
+  await Promise.all(Array.from(spans).map(async (span) => {
+    const slug = span.dataset.usesFor;
+    try {
+      const res = await fetch(`https://api.countapi.xyz/get/${COUNTER_NAMESPACE}/app-${slug}`);
+      const count = res.ok ? (await res.json()).value || 0 : 0;
+      span.textContent = `${count} use${count === 1 ? '' : 's'}`;
+    } catch {
+      span.textContent = '0 uses';
+    }
+  }));
 }
 
 function escapeHtml(str) {
