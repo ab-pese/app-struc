@@ -13,10 +13,22 @@
       "description": "Bin-packing optimizer for structural steel beam cutting, with Excel and PDF report generation."
     },
     {
-      "name": "Drawing Highlighter",
+      "name": "PDF Highlighter",
       "category": "tools",
-      "url": "https://example.streamlit.app",
-      "description": "PDF markup tool with OCR fallback for SHX-rendered engineering drawings. Replace this URL with your real one."
+      "url": "https://mark-pdf.streamlit.app",
+      "description": "Marks up PDF engineering drawings with custom text callouts and highlights."
+    },
+    {
+      "name": "PDF Table Extractor",
+      "category": "tools",
+      "url": "https://pdf-xlsx.streamlit.app",
+      "description": "Pulls tables out of PDF drawings and documents into XLSX or Google Sheets."
+    },
+    {
+      "name": "Sheet Region Exporter",
+      "category": "tools",
+      "url": "https://view-print.streamlit.app",
+      "description": "Exports selected regions of drawing sheets as clean, print-ready views."
     }
   ]
 }
