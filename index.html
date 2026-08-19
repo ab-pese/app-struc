@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>App Index</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="titleblock">
+    <div class="titleblock__left">
+      <span class="titleblock__label">SHEET</span>
+      <span class="titleblock__value" id="sheet-no">A-000</span>
+    </div>
+    <div class="titleblock__center">
+      <h1>APP INDEX</h1>
+      <p class="subtitle">a running index of deployed tools</p>
+    </div>
+    <div class="titleblock__right">
+      <span class="titleblock__label">REV</span>
+      <span class="titleblock__value" id="rev-no">-</span>
+    </div>
+  </header>
+
+  <nav class="filterbar" id="filterbar">
+    <button class="filter-chip is-active" data-filter="all">ALL</button>
+    <!-- category chips injected here -->
+  </nav>
+
+  <main id="sheet-index">
+    <!-- category sections injected here -->
+  </main>
+
+  <div class="empty-state" id="empty-state" hidden>
+    <p>NO APPS LISTED</p>
+    <p class="empty-state__hint">Add an entry to <code>apps.json</code> to populate this sheet.</p>
+  </div>
+
+  <footer>
+    <span>generated from <code>apps.json</code> — no build step required</span>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
