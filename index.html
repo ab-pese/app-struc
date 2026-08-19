@@ -8,20 +8,25 @@
 </head>
 <body>
 
+  <div class="bore" aria-hidden="true"></div>
+
   <header class="titleblock">
-    <div class="titleblock__left">
-      <span class="titleblock__label">SHEET</span>
-      <span class="titleblock__value" id="sheet-no">A-000</span>
-    </div>
     <div class="titleblock__center">
       <h1>APP INDEX</h1>
       <p class="subtitle">a running index of deployed tools</p>
     </div>
-    <div class="titleblock__right">
-      <span class="titleblock__label">REV</span>
-      <span class="titleblock__value" id="rev-no">-</span>
-    </div>
   </header>
+
+  <div class="sitebar" id="sitebar">
+    <div class="sitebar__rivet sitebar__rivet--tl" aria-hidden="true"></div>
+    <div class="sitebar__rivet sitebar__rivet--tr" aria-hidden="true"></div>
+    <div class="sitebar__rivet sitebar__rivet--bl" aria-hidden="true"></div>
+    <div class="sitebar__rivet sitebar__rivet--br" aria-hidden="true"></div>
+    <div class="sitebar__stat">
+      <span class="sitebar__label">SITE VISITS</span>
+      <span class="sitebar__value" id="visit-count">···</span>
+    </div>
+  </div>
 
   <nav class="filterbar" id="filterbar">
     <button class="filter-chip is-active" data-filter="all">ALL</button>
